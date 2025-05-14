@@ -223,7 +223,11 @@ public class WebViewChannelDelegate extends ChannelDelegateImpl {
           InAppBrowserSettings inAppBrowserSettings = new InAppBrowserSettings();
           HashMap<String, Object> inAppBrowserSettingsMap = (HashMap<String, Object>) call.argument("settings");
           inAppBrowserSettings.parse(inAppBrowserSettingsMap);
-          inAppBrowserActivity.setSettings(inAppBrowserSettings, inAppBrowserSettingsMap);
+          try {
+            inAppBrowserActivity.setSettings(inAppBrowserSettings, inAppBrowserSettingsMap);
+          } catch (Exception e) {
+            result.error(LOG_TAG, e.getMessage(), null);
+          }
         } else if (webView != null) {
           InAppWebViewSettings inAppWebViewSettings = new InAppWebViewSettings();
           HashMap<String, Object> inAppWebViewSettingsMap = (HashMap<String, Object>) call.argument("settings");
@@ -251,7 +255,11 @@ public class WebViewChannelDelegate extends ChannelDelegateImpl {
       case show:
         if (webView != null && webView.getInAppBrowserDelegate() instanceof InAppBrowserActivity) {
           InAppBrowserActivity inAppBrowserActivity = (InAppBrowserActivity) webView.getInAppBrowserDelegate();
-          inAppBrowserActivity.show();
+          try {
+            inAppBrowserActivity.show();
+          } catch (Exception e) {
+            result.error(LOG_TAG, e.getMessage(), null);
+          }
           result.success(true);
         } else {
           result.notImplemented();
@@ -362,6 +370,7 @@ public class WebViewChannelDelegate extends ChannelDelegateImpl {
         result.success(true);
         break;
       case printCurrentPage:
+        try {
         if (webView != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
           PrintJobSettings settings = new PrintJobSettings();
           Map<String, Object> settingsMap = (Map<String, Object>) call.argument("settings");
@@ -370,6 +379,9 @@ public class WebViewChannelDelegate extends ChannelDelegateImpl {
           }
           result.success(webView.printCurrentPage(settings));
         } else {
+          result.success(null);
+        }
+        } catch (Exception e) {
           result.success(null);
         }
         break;

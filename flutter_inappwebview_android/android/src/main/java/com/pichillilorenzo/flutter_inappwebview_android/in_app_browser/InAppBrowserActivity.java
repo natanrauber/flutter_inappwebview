@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import io.flutter.plugin.common.MethodChannel;
 
@@ -157,7 +158,11 @@ public class InAppBrowserActivity extends AppCompatActivity implements InAppBrow
 
     actionBar = getSupportActionBar();
 
-    prepareView();
+    try {
+      prepareView();
+    } catch (Exception e) {
+      Log.d(LOG_TAG, Objects.requireNonNull(e.getMessage()));
+    }
 
     if (windowId != -1) {
       if (webView.plugin != null && webView.plugin.inAppWebViewManager != null) {
@@ -432,7 +437,7 @@ public class InAppBrowserActivity extends AppCompatActivity implements InAppBrow
         Intent openActivity = new Intent(this, Class.forName(fromActivity));
         openActivity.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivityIfNeeded(openActivity, 0);
-      } catch (ClassNotFoundException e) {
+      } catch (Exception e) {
         Log.d(LOG_TAG, "", e);
       }
     }

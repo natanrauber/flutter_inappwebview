@@ -124,9 +124,16 @@ public class ChromeCustomTabsActivity extends Activity implements Disposable {
     customTabActivityHelper.setConnectionCallback(new CustomTabActivityHelper.ConnectionCallback() {
       @Override
       public void onCustomTabsConnected() {
-        customTabsConnected();
-        if (channelDelegate != null) {
-          channelDelegate.onServiceConnected();
+        try {
+          customTabsConnected();
+          if (channelDelegate != null) {
+            channelDelegate.onServiceConnected();
+          }
+        } catch (java.lang.Exception e) {
+          if (channelDelegate != null) {
+            channelDelegate.onBrowserNotSupported();
+          }
+          Log.d(LOG_TAG, "Custom Tabs not supported", e);
         }
       }
 
